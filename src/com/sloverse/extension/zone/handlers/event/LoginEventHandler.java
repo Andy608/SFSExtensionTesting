@@ -1,15 +1,17 @@
-package com.sloverse.extension.zone.login;
+package com.sloverse.extension.zone.handlers.event;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import com.sloverse.extension.zone.core.SloverseZoneExtension;
 import com.sloverse.extension.zone.util.SloverseSessionProperties;
 import com.smartfoxserver.bitswarm.sessions.ISession;
 import com.smartfoxserver.v2.core.ISFSEvent;
 import com.smartfoxserver.v2.core.SFSEventParam;
 import com.smartfoxserver.v2.db.IDBManager;
+import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.exceptions.SFSErrorCode;
 import com.smartfoxserver.v2.exceptions.SFSErrorData;
 import com.smartfoxserver.v2.exceptions.SFSException;
@@ -68,6 +70,14 @@ public class LoginEventHandler extends BaseServerEventHandler
 		{
 			trace(ExtensionLogLevel.WARN, "Well this is awkward... There seems to be an SQL error: " + e.toString());
 			throw new SFSException("Well this is awkward... There seems to be an SQL error.");
+		}
+		
+		User loggedInUser = getApi().getUserByName(loginName);
+		
+		if (loggedInUser != null)
+		{
+			trace("This user is already logged on. Kicking " + loginName + ".");
+			SloverseZoneExtension.zoneExtension.eventManager.removeDuplicatePlayer(SloverseZoneExtension.zoneExtension.getWorld().getPlayer(loggedInUser));
 		}
 		
 		trace("Successfully logged in " + loginName + "!");

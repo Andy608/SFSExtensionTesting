@@ -1,8 +1,9 @@
-package com.sloverse.extension.zone.login;
+package com.sloverse.extension.zone.handlers.event;
 
 import java.util.Arrays;
 import java.util.List;
 
+import com.sloverse.extension.zone.core.SloverseZoneExtension;
 import com.sloverse.extension.zone.util.SloverseSessionProperties;
 import com.smartfoxserver.v2.core.ISFSEvent;
 import com.smartfoxserver.v2.core.SFSEventParam;
@@ -26,16 +27,18 @@ public class ZoneJoinEventHandler extends BaseServerEventHandler
 		List<UserVariable> userVars = Arrays.asList(playerID);
 		this.getApi().setUserVariables(loggedInUser, userVars);
 		
-		Room lobby = this.getParentExtension().getParentZone().getRoomByName("Lobby");
+		SloverseZoneExtension.zoneExtension.getWorld().addPlayerToWorld(loggedInUser);
 		
-		if (lobby == null)
+		Room town = SloverseZoneExtension.zoneExtension.getWorld().town.getRoom();
+		
+		if (town == null)
 		{
-			throw new SFSException("Lobby Room was not found.");
+			throw new SFSException("Town Room was not found.");
 		}
 		else
 		{
-			trace("Joining the Lobby...");
-			this.getApi().joinRoom(loggedInUser, lobby);
+			trace("Joining the town...");
+			this.getApi().joinRoom(loggedInUser, town);
 		}
 	}
 }
