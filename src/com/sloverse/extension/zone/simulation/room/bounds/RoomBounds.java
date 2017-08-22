@@ -18,7 +18,7 @@ public class RoomBounds
 	
 	public boolean isPlayerInRoomBounds(Player player) 
 	{
-		RoomCoordinate playerPosition = player.getTransform().getRoomPosition();
+		RoomCoordinate playerPosition = player.getPositionInRoom().getRoomPosition();
 		
 		if (!isPlayerInAABoundingBox(playerPosition)) return false;
 		
@@ -35,8 +35,8 @@ public class RoomBounds
 		
 		for (int i = 0; i < roomBoundCoordinates.size(); ++i)
 		{
-			float xCoord = roomBoundCoordinates.get(i).getXCoordinate();
-			float yCoord = roomBoundCoordinates.get(i).getYCoordinate();
+			float xCoord = roomBoundCoordinates.get(i).x;
+			float yCoord = roomBoundCoordinates.get(i).y;
 			
 			if (xCoord < minX) minX = xCoord;
 			if (yCoord < minY) minY = yCoord;
@@ -44,8 +44,8 @@ public class RoomBounds
 			if (yCoord > maxY) maxY = yCoord;
 		}
 		
-		if (playerPosition.getXCoordinate() < minX || playerPosition.getXCoordinate() > maxX ||
-			playerPosition.getYCoordinate() < minY || playerPosition.getYCoordinate() > maxY)
+		if (playerPosition.x < minX || playerPosition.x > maxX ||
+			playerPosition.y < minY || playerPosition.y > maxY)
 		{
 			return false;
 		}

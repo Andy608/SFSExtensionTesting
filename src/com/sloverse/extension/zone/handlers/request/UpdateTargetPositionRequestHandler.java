@@ -37,8 +37,8 @@ public class UpdateTargetPositionRequestHandler extends BaseClientRequestHandler
 			
 			RoomCoordinate newTargetPosition = bounds.clampTargetToRoomBounds(requestedTargetPosition);
 			
-			player.setTargetPosition(newTargetPosition);
-			SloverseZoneExtension.zoneExtension.trace("Set new target position for player, " + user.getName() + " at: X = " + newTargetPosition.getXCoordinate() + ", Y = " + newTargetPosition.getYCoordinate());
+			player.setTargetPosition(newTargetPosition, false);
+			SloverseZoneExtension.zoneExtension.trace("Set new target position for player, " + user.getName() + " at: X = " + newTargetPosition.x + ", Y = " + newTargetPosition.y);
 		}
 	}
 }

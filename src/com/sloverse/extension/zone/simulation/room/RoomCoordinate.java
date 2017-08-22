@@ -5,38 +5,25 @@ public class RoomCoordinate
 	public static final float MAX_BOUND = 1.0f;
 	public static final float MIN_BOUND = -1.0f;
 	
-	private float xCoordinate;
-	private float yCoordinate;
+	public float x;
+	public float y;
 	
 	public RoomCoordinate(float x, float y) 
 	{	
-		xCoordinate = x;
-		yCoordinate = y;
+		this.x = x;
+		this.y = y;
 	}
 	
 	public RoomCoordinate(RoomCoordinate other)
 	{
-		xCoordinate = other.xCoordinate;
-		yCoordinate = other.yCoordinate;
+		x = other.x;
+		y = other.y;
 	}
 	
-	public float getXCoordinate()
+	public double distanceTo(RoomCoordinate another) 
 	{
-		return xCoordinate;
-	}
-	
-	public float getYCoordinate()
-	{
-		return yCoordinate;
-	}
-	
-	public void setXCoordinate(float x)
-	{
-		this.xCoordinate = x;
-	}
-	
-	public void setYCoordinate(float y)
-	{
-		this.yCoordinate = y;
+		double dx = Math.pow(this.x - another.x, 2);
+		double dy = Math.pow(this.y - another.y, 2);
+		return Math.sqrt(dx + dy);
 	}
 }

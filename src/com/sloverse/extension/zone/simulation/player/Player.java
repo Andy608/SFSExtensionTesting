@@ -9,15 +9,19 @@ import com.smartfoxserver.v2.entities.data.SFSObject;
 
 public class Player 
 {
+	public static final String BUNDLE_NAME = "player";
+	public static final String BUNDLE_POSITION_NAME = "playerPosition";
+	
 	private User sfsUser;
-	private Transform playerTransform;
+	private PlayerPositionData playerPosition;
 	private RoomCoordinate targetPosition;
+	private boolean teleportToTarget;
 	private SloverseRoom lastRoom;
 	
 	public Player(User user)
 	{
 		sfsUser = user;
-		playerTransform = new Transform();
+		playerPosition = new PlayerPositionData();
 		targetPosition = null;
 	}
 	
@@ -26,9 +30,9 @@ public class Player
 		return sfsUser;
 	}
 	
-	public Transform getTransform()
+	public PlayerPositionData getPositionInRoom()
 	{
-		return playerTransform;
+		return playerPosition;
 	}
 	
 	public void toSFSObject(ISFSObject data)
@@ -36,8 +40,8 @@ public class Player
 		ISFSObject playerData = new SFSObject();
 		
 		playerData.putInt("id", sfsUser.getId());
-		playerTransform.toSFSObject(playerData);
-		data.putSFSObject("player", playerData);
+		playerPosition.toSFSObject(playerData);
+		data.putSFSObject(BUNDLE_NAME, playerData);
 	}
 	
 	public SloverseRoom getLastRoom()
@@ -55,6 +59,11 @@ public class Player
 		return targetPosition;
 	}
 	
+	public boolean isTargetPositionInstant()
+	{
+		return teleportToTarget;
+	}
+	
 	public void updateLastRoom()
 	{
 		SloverseRoom newLastRoom = SloverseZoneExtension.zoneExtension.getWorld().getSloverseRoom(sfsUser.getLastJoinedRoom());
@@ -62,7 +71,7 @@ public class Player
 		if (newLastRoom != null)
 		{
 			lastRoom = newLastRoom;
-			setPosition((float) (lastRoom.getSpawn().getXCoordinate() + 1.0f - (Math.random() * 2.0f)), (float) (lastRoom.getSpawn().getYCoordinate() + 1.0f - (Math.random() * 2.0f)));
+			setTargetPosition(new RoomCoordinate((float) (lastRoom.getSpawn().x + 1.0f - (Math.random() * 2.0f)), (float) (lastRoom.getSpawn().y + 1.0f - (Math.random() * 2.0f))), true);
 		}
 		else
 		{
@@ -71,20 +80,20 @@ public class Player
 	}
 	
 	//Used for spawn points and teleportation.
-	private void setPosition(float x, float y)
+	/*private void setPosition(float x, float y)
 	{
 		SloverseZoneExtension.zoneExtension.trace("SETTING POSITION TO: " + x + ", " + y);
 		
-		Transform newPlayerTransform = new Transform(x, y, playerTransform.getZ(),
-				playerTransform.getRotationX(), playerTransform.getRotationY(), playerTransform.getRotationZ());
+		PlayerPositionData newPlayerPosition = new PlayerPositionData(x, y);
 		
-		playerTransform = newPlayerTransform;
+		playerPosition = newPlayerPosition;
 		
 		SloverseZoneExtension.zoneExtension.eventManager.updatePlayerPosition(this);
-	}
+	}*/
 	
-	public void setTargetPosition(RoomCoordinate newTargetPosition)
+	public void setTargetPosition(RoomCoordinate newTargetPosition, boolean isInstant)
 	{
 		targetPosition = newTargetPosition;
+		teleportToTarget = isInstant;
 	}
 }

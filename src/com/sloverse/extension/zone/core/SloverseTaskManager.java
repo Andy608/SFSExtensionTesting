@@ -11,6 +11,10 @@ import com.smartfoxserver.v2.util.TaskScheduler;
 
 public class SloverseTaskManager 
 {
+	public static final int MILLIS_PER_SECOND = 1000;
+	public static final int TICKS_PER_SECOND = 10;
+	public static final float DELTA = 1.0f / (float) TICKS_PER_SECOND;
+	
 	public enum EnumTaskID 
 	{
 		UPDATE_PLAYER_POSITION
@@ -45,7 +49,7 @@ public class SloverseTaskManager
 			updatePlayerPositionsRunnable = new UpdatePlayerPositionsTask();
 			
 			//Fire every tenth of a second
-			addTaskToSchedule(updatePlayerPositionsRunnable, 0, 100, TimeUnit.MILLISECONDS);
+			addTaskToSchedule(updatePlayerPositionsRunnable, 0, MILLIS_PER_SECOND / TICKS_PER_SECOND, TimeUnit.MILLISECONDS);
 		}
 	}
 	

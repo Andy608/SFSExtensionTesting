@@ -39,17 +39,24 @@ public class SloverseEventManager
 		}
 	}
 	
-	public void updatePlayerPosition(Player playerChanged)
+	//Used when a SINGLE player teleports or joins a room.
+	/*public void updatePlayerPosition(Player playerChanged)
 	{
 		ISFSObject data = new SFSObject();
 		playerChanged.toSFSObject(data);
 		
 		Room currentRoom = playerChanged.getLastRoom().getRoom();
 		
-		SloverseZoneExtension.zoneExtension.trace("UPDATE PLAYER POSITION METHOD: " + data.getSFSObject("player").getSFSObject("transform").getFloat("x") + ", " + data.getSFSObject("player").getSFSObject("transform").getFloat("y"));
+		SloverseZoneExtension.zoneExtension.trace("UPDATE PLAYER POSITION METHOD: " + data.getSFSObject(Player.BUNDLE_NAME).getSFSObject(Player.BUNDLE_POSITION_NAME).getFloat("x") + ", " + data.getSFSObject(Player.BUNDLE_NAME).getSFSObject(Player.BUNDLE_POSITION_NAME).getFloat("y"));
 		
 		List<User> userList = currentRoom.getPlayersList();
 		SloverseZoneExtension.zoneExtension.send(UPDATE_PLAYER_POSITION, data, userList);
+	}*/
+	
+	//Used to update all player's positions.
+	public void updatePlayerPositions()
+	{
+		//
 	}
 	
 	public void removeDuplicatePlayer(Player playerToKick)
