@@ -6,9 +6,9 @@ import java.util.List;
 import com.sloverse.extension.zone.core.SloverseTaskManager;
 import com.sloverse.extension.zone.core.SloverseZoneExtension;
 import com.sloverse.extension.zone.simulation.player.Player;
-import com.sloverse.extension.zone.simulation.room.RoomCoordinate;
 import com.sloverse.extension.zone.simulation.room.SloverseRoom;
 import com.sloverse.extension.zone.simulation.world.World;
+import com.sloverse.extension.zone.util.math.Vec2;
 import com.smartfoxserver.v2.entities.data.ISFSArray;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import com.smartfoxserver.v2.entities.data.SFSArray;
@@ -21,6 +21,10 @@ public class UpdatePlayerPositionsTask implements Runnable {
 	private static final String UPDATE_PLAYERS_POSITION_BUNDLE = "updatePlayersPositionBundle";
 	
 	private static List<Player> playersToUpdate = new ArrayList<Player>();
+	private static Vec2 targetDirection = new Vec2();
+	
+	private static final float SPEED = 5.0f;
+	private static Vec2 moveVelocity = new Vec2();
 	
 	private SloverseZoneExtension extension = SloverseZoneExtension.zoneExtension;
 	
@@ -41,38 +45,45 @@ public class UpdatePlayerPositionsTask implements Runnable {
 			{
 				if (currentPlayer.hasTargetPosition())
 				{
-					RoomCoordinate currentPosition = currentPlayer.getPositionInRoom().getRoomPosition();
-					RoomCoordinate targetPosition = currentPlayer.getTargetPosition();
+					Vec2 currentPosition = currentPlayer.getPositionInRoom().getRoomPosition();
+					Vec2 targetPosition = currentPlayer.getTargetPosition();
 					
-					if (currentPlayer.isTargetPositionInstant())
+					if (!currentPlayer.lerpToTarget())
 					{
-						currentPlayer.getPositionInRoom().getRoomPosition().x = targetPosition.x;
-						currentPlayer.getPositionInRoom().getRoomPosition().y = targetPosition.y;
+						currentPlayer.getPositionInRoom().setRoomPosition(targetPosition);
 					}
 					else
 					{
-						//Use vector eventually.
-						RoomCoordinate slope = new RoomCoordinate(targetPosition.x - currentPosition.x, targetPosition.y - currentPosition.y);
+						targetDirection = Vec2.subtract(targetPosition, currentPosition);
 						
-						//move player towards target by TARGETSPEED * deltatime
-						RoomCoordinate velocity = new RoomCoordinate(0, 0);
-						velocity.x = slope.x * 1.0f * SloverseTaskManager.DELTA;
-						velocity.y = slope.y * 1.0f * SloverseTaskManager.DELTA;
-						
-						extension.trace("SLOPE: " + slope.x + ", " + slope.y + " VELOCITY X: " + velocity.x + " | VELOCITY Y: " + velocity.y);
-						
-						currentPlayer.getPositionInRoom().getRoomPosition().x += velocity.x;
-						currentPlayer.getPositionInRoom().getRoomPosition().y += velocity.y;
+						if (targetDirection.getMagnitude() != 0)
+						{
+							targetDirection.normalize();
+							
+							//move player towards target by TARGETSPEED * deltatime
+							moveVelocity = Vec2.scale(targetDirection, SPEED * SloverseTaskManager.DELTA);
+							
+							//extension.trace("TARGET DIRECTION: " + targetDirection.x + ", " + targetDirection.y + " | LERP: " + currentPlayer.lerpToTarget());
+							
+							currentPlayer.getPositionInRoom().getRoomPosition().add(moveVelocity);
+						}
+						else
+						{
+							extension.trace("Player is already at the target position!");
+							currentPlayer.setTargetPosition(null);
+							continue;
+						}
 					}
 					
 					
 					//add player to update list
 					playersToUpdate.add(currentPlayer);
-					extension.trace("ADDING PLAYER TO UPDATE LIST");
+					//extension.trace("ADDING PLAYER TO UPDATE LIST");
 					
-					if (currentPlayer.getPositionInRoom().getRoomPosition().distanceTo(targetPosition) < 0.1f)
+					if (Vec2.distanceBetween(currentPlayer.getPositionInRoom().getRoomPosition(), targetPosition) < 1.0f)
 					{
-						currentPlayer.setTargetPosition(null, false);
+						currentPlayer.getPositionInRoom().setRoomPosition(targetPosition);
+						currentPlayer.setTargetPosition(null);
 						extension.trace("FINISHED MOVING");
 					}
 				}

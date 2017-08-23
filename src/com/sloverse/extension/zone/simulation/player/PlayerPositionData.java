@@ -1,12 +1,12 @@
 package com.sloverse.extension.zone.simulation.player;
 
-import com.sloverse.extension.zone.simulation.room.RoomCoordinate;
+import com.sloverse.extension.zone.util.math.Vec2;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import com.smartfoxserver.v2.entities.data.SFSObject;
 
 public class PlayerPositionData 
 {	
-	private RoomCoordinate roomPosition;
+	private Vec2 roomPosition;
 	
 	public PlayerPositionData()
 	{
@@ -16,12 +16,17 @@ public class PlayerPositionData
 	
 	public PlayerPositionData(float x, float y)
 	{
-		roomPosition = new RoomCoordinate(x, y);
+		roomPosition = new Vec2(x, y);
 	}
 	
-	public RoomCoordinate getRoomPosition()
+	public Vec2 getRoomPosition()
 	{
 		return roomPosition;
+	}
+	
+	public void setRoomPosition(Vec2 roomPosition)
+	{
+		this.roomPosition.set(roomPosition);
 	}
 	
 	public static PlayerPositionData fromSFSObject(ISFSObject data)
@@ -45,6 +50,6 @@ public class PlayerPositionData
 	
 	public void override(PlayerPositionData another)
 	{
-		this.roomPosition = new RoomCoordinate(another.roomPosition);
+		this.roomPosition = new Vec2(another.roomPosition);
 	}
 }

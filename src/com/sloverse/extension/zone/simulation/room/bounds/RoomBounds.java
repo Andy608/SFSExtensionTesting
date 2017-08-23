@@ -4,21 +4,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.sloverse.extension.zone.simulation.player.Player;
-import com.sloverse.extension.zone.simulation.room.RoomCoordinate;
+import com.sloverse.extension.zone.util.math.Vec2;
 
 public class RoomBounds 
 {
-	private List<RoomCoordinate> roomBoundCoordinates;
+	private static float MAX_ROOM_BOUNDS = 1.0f;
+	private static float MIN_ROOM_BOUNDS = -1.0f;
+	
+	private List<Vec2> roomBoundCoordinates;
 	//private List<RoomBoundLine> roomBoundLines;
 	
-	public RoomBounds(ArrayList<RoomCoordinate> roomBounds)
+	public RoomBounds(ArrayList<Vec2> roomBounds)
 	{
 		roomBoundCoordinates = roomBounds;
 	}
 	
 	public boolean isPlayerInRoomBounds(Player player) 
 	{
-		RoomCoordinate playerPosition = player.getPositionInRoom().getRoomPosition();
+		Vec2 playerPosition = player.getPositionInRoom().getRoomPosition();
 		
 		if (!isPlayerInAABoundingBox(playerPosition)) return false;
 		
@@ -28,10 +31,10 @@ public class RoomBounds
 		return true;
 	}
 	
-	private boolean isPlayerInAABoundingBox(RoomCoordinate playerPosition)
+	private boolean isPlayerInAABoundingBox(Vec2 playerPosition)
 	{
-		float minX = RoomCoordinate.MAX_BOUND, minY = RoomCoordinate.MAX_BOUND;
-		float maxX = RoomCoordinate.MIN_BOUND, maxY = RoomCoordinate.MIN_BOUND;
+		float minX = MAX_ROOM_BOUNDS, minY = MAX_ROOM_BOUNDS;
+		float maxX = MIN_ROOM_BOUNDS, maxY = MIN_ROOM_BOUNDS;
 		
 		for (int i = 0; i < roomBoundCoordinates.size(); ++i)
 		{
@@ -53,7 +56,7 @@ public class RoomBounds
 		return true;
 	}
 
-	public RoomCoordinate clampTargetToRoomBounds(RoomCoordinate requestedTargetPosition) 
+	public Vec2 clampTargetToRoomBounds(Vec2 requestedTargetPosition) 
 	{
 		//IN THE FUTURE. 
 		//LOOK AT 3D MATH TEXT BOOK PG 96 AND FIND CLOSEST INTERSECTION BETWEEN PLAYER POINT, ORIGINAL TARGET POINT AND BOUNDS.

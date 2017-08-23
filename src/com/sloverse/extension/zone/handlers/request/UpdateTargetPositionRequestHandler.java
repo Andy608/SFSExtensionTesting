@@ -2,9 +2,9 @@ package com.sloverse.extension.zone.handlers.request;
 
 import com.sloverse.extension.zone.core.SloverseZoneExtension;
 import com.sloverse.extension.zone.simulation.player.Player;
-import com.sloverse.extension.zone.simulation.room.RoomCoordinate;
 import com.sloverse.extension.zone.simulation.room.SloverseRoom;
 import com.sloverse.extension.zone.simulation.room.bounds.RoomBounds;
+import com.sloverse.extension.zone.util.math.Vec2;
 import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import com.smartfoxserver.v2.extensions.BaseClientRequestHandler;
@@ -32,13 +32,14 @@ public class UpdateTargetPositionRequestHandler extends BaseClientRequestHandler
 		}
 		else
 		{
-			RoomCoordinate requestedTargetPosition = new RoomCoordinate(data.getFloat("x"), data.getFloat("y"));
+			Vec2 requestedTargetPosition = new Vec2(data.getFloat("x"), data.getFloat("y"));
 			RoomBounds bounds = room.getRoomBounds();
 			
-			RoomCoordinate newTargetPosition = bounds.clampTargetToRoomBounds(requestedTargetPosition);
+			Vec2 newTargetPosition = bounds.clampTargetToRoomBounds(requestedTargetPosition);
 			
-			player.setTargetPosition(newTargetPosition, false);
-			SloverseZoneExtension.zoneExtension.trace("Set new target position for player, " + user.getName() + " at: X = " + newTargetPosition.x + ", Y = " + newTargetPosition.y);
+			player.setLerp(true);
+			player.setTargetPosition(newTargetPosition);
+			SloverseZoneExtension.zoneExtension.trace("Set new target position for player, " + user.getName() + " at: X = " + newTargetPosition.x + ", Y = " + newTargetPosition.y + " LERP: " + player.lerpToTarget());
 		}
 	}
 }

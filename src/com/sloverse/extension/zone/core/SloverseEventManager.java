@@ -11,7 +11,8 @@ import com.smartfoxserver.v2.entities.data.SFSObject;
 public class SloverseEventManager 
 {
 	private static final String SPAWN_PLAYER = "spawnPlayer";
-	private static final String UPDATE_PLAYER_POSITION = "updatePlayerActions";
+	private static final String UPDATE_PLAYER_DIRECTION = "updatePlayerDirection";
+	//private static final String UPDATE_PLAYER_POSITION = "updatePlayerActions";
 	private static final String REMOVE_DUPLICATE_PLAYER = "removeDuplicatePlayer";
 	
 	//Send init new player message to all clients
@@ -70,5 +71,24 @@ public class SloverseEventManager
 		
 		List<User> userList = currentRoom.getPlayersList();
 		SloverseZoneExtension.zoneExtension.send(REMOVE_DUPLICATE_PLAYER, data, userList);
+	}
+	
+	public void updatePlayerDirection(Player playerToUpdate, User targetClient)
+	{
+		ISFSObject data = new SFSObject();
+		data.putInt("id", playerToUpdate.getSFSUser().getId());
+		data.putInt("dir", playerToUpdate.getLookDirection().ordinal());
+		
+		Room currentRoom = playerToUpdate.getLastRoom().getRoom();
+		
+		if (targetClient == null)
+		{
+			List<User> userList = currentRoom.getPlayersList();
+			SloverseZoneExtension.zoneExtension.send(UPDATE_PLAYER_DIRECTION, data, userList);
+		}
+		else
+		{
+			SloverseZoneExtension.zoneExtension.send(UPDATE_PLAYER_DIRECTION, data, targetClient);
+		}
 	}
 }

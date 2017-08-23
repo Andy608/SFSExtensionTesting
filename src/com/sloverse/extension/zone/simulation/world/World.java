@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.sloverse.extension.zone.core.SloverseZoneExtension;
 import com.sloverse.extension.zone.simulation.player.Player;
-import com.sloverse.extension.zone.simulation.room.RoomCoordinate;
 import com.sloverse.extension.zone.simulation.room.SloverseRoom;
 import com.sloverse.extension.zone.simulation.room.bounds.RoomBoundsList;
 import com.smartfoxserver.v2.entities.Room;
@@ -80,7 +79,7 @@ public class World
 	{
 		Zone currentZone = SloverseZoneExtension.zoneExtension.getParentZone();
 		
-		town = new SloverseRoom("Town", 5, 0, true, 0, RoomBoundsList.townCenterBounds, new RoomCoordinate(2, 1));
+		town = new SloverseRoom("Town", 5, 0, true, 0, RoomBoundsList.townCenterBounds);
 		
 		try 
 		{

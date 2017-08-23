@@ -1,8 +1,8 @@
 package com.sloverse.extension.zone.simulation.player;
 
 import com.sloverse.extension.zone.core.SloverseZoneExtension;
-import com.sloverse.extension.zone.simulation.room.RoomCoordinate;
 import com.sloverse.extension.zone.simulation.room.SloverseRoom;
+import com.sloverse.extension.zone.util.math.Vec2;
 import com.smartfoxserver.v2.entities.User;
 import com.smartfoxserver.v2.entities.data.ISFSObject;
 import com.smartfoxserver.v2.entities.data.SFSObject;
@@ -14,8 +14,9 @@ public class Player
 	
 	private User sfsUser;
 	private PlayerPositionData playerPosition;
-	private RoomCoordinate targetPosition;
-	private boolean teleportToTarget;
+	private Vec2 targetPosition;
+	private EnumPlayerDirection lookDirection;
+	private boolean lerpToTarget;
 	private SloverseRoom lastRoom;
 	
 	public Player(User user)
@@ -23,6 +24,7 @@ public class Player
 		sfsUser = user;
 		playerPosition = new PlayerPositionData();
 		targetPosition = null;
+		lookDirection = EnumPlayerDirection.SOUTH;
 	}
 	
 	public User getSFSUser()
@@ -40,7 +42,20 @@ public class Player
 		ISFSObject playerData = new SFSObject();
 		
 		playerData.putInt("id", sfsUser.getId());
+		
+		boolean hasTarget = targetPosition != null;
+		playerData.putBool("hasTarget", hasTarget);
+		
+		if (hasTarget)
+		{			
+			playerData.putFloat("targetX", targetPosition.x);
+			playerData.putFloat("targetY", targetPosition.y);
+		}
+		
+		playerData.putInt("dir", lookDirection.ordinal());
+		
 		playerPosition.toSFSObject(playerData);
+		playerData.putBool("lerp", lerpToTarget);
 		data.putSFSObject(BUNDLE_NAME, playerData);
 	}
 	
@@ -54,14 +69,20 @@ public class Player
 		return targetPosition != null;
 	}
 	
-	public RoomCoordinate getTargetPosition()
+	public Vec2 getTargetPosition()
 	{
 		return targetPosition;
 	}
 	
-	public boolean isTargetPositionInstant()
+	public void setLerp(boolean lerp)
 	{
-		return teleportToTarget;
+		SloverseZoneExtension.zoneExtension.trace("SETTING LERP TO: " + lerp);
+		lerpToTarget = lerp;
+	}
+	
+	public boolean lerpToTarget()
+	{
+		return lerpToTarget;
 	}
 	
 	public void updateLastRoom()
@@ -71,7 +92,8 @@ public class Player
 		if (newLastRoom != null)
 		{
 			lastRoom = newLastRoom;
-			setTargetPosition(new RoomCoordinate((float) (lastRoom.getSpawn().x + 1.0f - (Math.random() * 2.0f)), (float) (lastRoom.getSpawn().y + 1.0f - (Math.random() * 2.0f))), true);
+			setLerp(false);
+			setTargetPosition(new Vec2((float) (lastRoom.getSpawn().x + 0.1f - (Math.random() * 0.2f)), (float) (lastRoom.getSpawn().y + 0.1f - (Math.random() * 0.2f))));
 		}
 		else
 		{
@@ -91,9 +113,18 @@ public class Player
 		SloverseZoneExtension.zoneExtension.eventManager.updatePlayerPosition(this);
 	}*/
 	
-	public void setTargetPosition(RoomCoordinate newTargetPosition, boolean isInstant)
+	public void setTargetPosition(Vec2 newTargetPosition)
 	{
 		targetPosition = newTargetPosition;
-		teleportToTarget = isInstant;
+	}
+	
+	public void setLookDirection(EnumPlayerDirection lookDir)
+	{
+		lookDirection = lookDir;
+	}
+	
+	public EnumPlayerDirection getLookDirection()
+	{
+		return lookDirection;
 	}
 }

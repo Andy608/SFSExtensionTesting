@@ -7,6 +7,7 @@ import com.sloverse.extension.zone.handlers.event.LoginEventHandler;
 import com.sloverse.extension.zone.handlers.event.ServerReadyEventHandler;
 import com.sloverse.extension.zone.handlers.event.ZoneJoinEventHandler;
 import com.sloverse.extension.zone.handlers.request.SpawnPlayerInRoomRequestHandler;
+import com.sloverse.extension.zone.handlers.request.UpdatePlayerDirectionRequestHandler;
 import com.sloverse.extension.zone.handlers.request.UpdateTargetPositionRequestHandler;
 import com.sloverse.extension.zone.simulation.world.World;
 import com.sloverse.extension.zone.util.SloverseRequestType;
@@ -35,6 +36,7 @@ public class SloverseZoneExtension extends SFSExtension
 		
 		this.addRequestHandler(SloverseRequestType.SPAWN_PLAYER_IN_ROOM, SpawnPlayerInRoomRequestHandler.class);
 		this.addRequestHandler(SloverseRequestType.UPDATE_TARGET_POSITION, UpdateTargetPositionRequestHandler.class);
+		this.addRequestHandler(SloverseRequestType.UPDATE_PLAYER_DIRECTION, UpdatePlayerDirectionRequestHandler.class);
 		
 		this.addEventHandler(SFSEventType.USER_LOGIN, LoginEventHandler.class);
 		this.addEventHandler(SFSEventType.USER_JOIN_ZONE, ZoneJoinEventHandler.class);

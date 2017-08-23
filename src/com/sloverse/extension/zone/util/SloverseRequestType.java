@@ -4,4 +4,5 @@ public class SloverseRequestType
 {
 	public static final String SPAWN_PLAYER_IN_ROOM = "SpawnPlayerInRoom";
 	public static final String UPDATE_TARGET_POSITION = "UpdateTargetPosition";
+	public static final String UPDATE_PLAYER_DIRECTION = "UpdatePlayerDirection";
 }

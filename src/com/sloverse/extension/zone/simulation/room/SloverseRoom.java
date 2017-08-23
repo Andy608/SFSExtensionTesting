@@ -6,6 +6,7 @@ import java.util.List;
 import com.sloverse.extension.zone.core.SloverseZoneExtension;
 import com.sloverse.extension.zone.simulation.player.Player;
 import com.sloverse.extension.zone.simulation.room.bounds.RoomBounds;
+import com.sloverse.extension.zone.util.math.Vec2;
 import com.smartfoxserver.v2.api.CreateRoomSettings;
 import com.smartfoxserver.v2.entities.Room;
 
@@ -16,16 +17,16 @@ public class SloverseRoom
 	
 	private CreateRoomSettings roomSettings;
 	
-	private RoomCoordinate spawnPoint;
+	private Vec2 spawnPoint;
 	
 	private List<Player> playersInRoom;
 	
 	public SloverseRoom(String roomName, int maxUsers, int maxSpectators, boolean isGame, int maxVariables, RoomBounds bounds) 
 	{
-		this(roomName, maxUsers, maxSpectators, isGame, maxVariables, bounds, new RoomCoordinate(0, 0));
+		this(roomName, maxUsers, maxSpectators, isGame, maxVariables, bounds, new Vec2(0.5f, 0.5f));
 	}
 	
-	public SloverseRoom(String roomName, int maxUsers, int maxSpectators, boolean isGame, int maxVariables, RoomBounds bounds, RoomCoordinate spawn) 
+	public SloverseRoom(String roomName, int maxUsers, int maxSpectators, boolean isGame, int maxVariables, RoomBounds bounds, Vec2 spawn) 
 	{
 		roomSettings = new CreateRoomSettings();
 		roomSettings.setName(roomName);
@@ -55,7 +56,7 @@ public class SloverseRoom
 		return room;
 	}
 	
-	public RoomCoordinate getSpawn()
+	public Vec2 getSpawn()
 	{
 		return spawnPoint;
 	}
